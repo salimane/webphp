@@ -22,16 +22,13 @@ define('LAYOUT_DIR', SITE_BASE . '/layouts');
  * name of the class
  *
  * @return void
- * @author Kenrick Buchanan
+ * @author Salimane Adjao Moustapha
  */
 
 function __autoload($class_name)
 {
-    $file = MODULES_DIR.'/'.$class_name.'/'.$class_name.'.php';
-    if (file_exists($file)) {
-        include_once $file;
-        define('TEMPLATES_DIR', MODULES_DIR.'/'.$class_name.'/templates');
-    }
+  include MODULES_DIR.'/'.$class_name.'/'.$class_name.'.php';;
+  define('TEMPLATES_DIR', MODULES_DIR.'/'.$class_name.'/templates');
 }
 
 
