@@ -1,17 +1,13 @@
-<?php 
-
-error_reporting(E_ALL);
-ini_set('display_errors',1);
-
+<?php
 
 /**
  * put anything here you want loaded before web.php
  * any config stuff should be in this file
  *
- * @author Kenrick Buchanan
+ * @author Salimane Adjao Moustapha
  */
 define("SITE_BASE", dirname(__FILE__));
-define("MODULES_DIR", SITE_BASE."/modules");  
+define("MODULES_DIR", SITE_BASE."/modules");
 
 // include path
 set_include_path( SITE_BASE . '/webphp/lib/' . PATH_SEPARATOR . get_include_path());
@@ -30,8 +26,8 @@ define('LAYOUT_DIR', SITE_BASE . '/layouts');
  */
 
 function __autoload($class_name)
-{                                                
-    $file = MODULES_DIR.'/'.$class_name.'/'.$class_name.'.php'; 
+{
+    $file = MODULES_DIR.'/'.$class_name.'/'.$class_name.'.php';
     if (file_exists($file)) {
         include_once $file;
         define('TEMPLATES_DIR', MODULES_DIR.'/'.$class_name.'/templates');
@@ -39,5 +35,5 @@ function __autoload($class_name)
 }
 
 
-include 'webphp/web.php';  
-                           
+include 'webphp/web.php';
+
