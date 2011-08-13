@@ -8,18 +8,14 @@ include_once 'exceptions/RequestErrorException.php';
 
 class Web
 {
-    protected $_baseURLPath     = '/';
     protected $_urls            = null;
     protected $_requestUrl      = null;
     public    $params           = null;
-    protected $_debug           = false;
-    protected $_debugMessages   = array();
     protected $_layoutFile      = null;
     protected $_layoutDir       = null;
     protected $_useLayout       = false;
     protected $_renderedText    = null;
     protected $_tpl             = null;
-    static protected $_plugins  = array();
     static protected $_instance = NULL;
 
 
@@ -167,25 +163,15 @@ class Web
         // process the request uri
         $instance->requestUri();
 
+        $route = array();
+
         foreach ($urls as $url_path => $options) {
             if (preg_match($url_path, $instance->request_uri, $matches)) {
-                // assuming pattern => class in URLS array
-                if (is_string($options)) {
-                    $saved = $options;
-                    $options = array();
-                    $options['module'] = $saved;
-                    unset($saved);
-                }
-
-                if ($options) {
-                    $route = array_merge($matches, $options);
-                } else {
-                    $route = $matches;
-                }
-                unset($matches);
-
-                $instance->params = $route;
-                break;
+              // assuming pattern => array(class, function) in URLS array
+              $route = array_merge($matches, array('module' => $options));
+              unset($matches);
+              $instance->params = $route;
+              break;
             }
         }
 
@@ -197,34 +183,9 @@ class Web
 
         // lets check matches for named patterns
         // be aware this is somewhat tied into __autoload function
-        $class_to_load = $route['module'];
+        $class_to_load = $route['module'][0];
 
-        // now check that module exists:
         // finds it based on __autoload function
-        if (!class_exists($class_to_load)) {
-            throw new RequestErrorException("Page not found.", 404);
-            return;
-        }
-
-        // ok now check if there was an 'action', if action is named index
-        // it just loads the forementioned module
-        if (array_key_exists('class', $route)
-            && $route['class'] != ''
-            && $route['class'] != $route['module']) {
-            // do an index check.
-            if ($route['class'] != 'index') {
-                $class_to_load = $route['class'];
-            }
-
-            // now check that the requested action class exists,
-            // this assumes that it has been included because of the module
-            // check from above.
-            if (!class_exists($class_to_load)) {
-                throw new RequestErrorException("Page not found.", 404);
-                return;
-            }
-        }
-
         // instantiate class
         $loaded_class = new $class_to_load();
 
@@ -239,21 +200,10 @@ class Web
         }
 
         // check for class method based on REQUEST_METHOD
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        // ajax hook
-        if ($instance->isAjaxRequest()) {
-            $method = "AJAX";
-        }
-
-        // whitelist of allowed method
-        if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE', 'AJAX'))) {
-            throw new RequestErrorException("HTTP Method not supported.", 405);
-            return;
-        }
+        $method = $route['module'][1];
 
         // see if currently loaded class even supports it
-        if (!method_exists($loaded_class, $_SERVER['REQUEST_METHOD'])) {
+        if (!method_exists($loaded_class, $method)) {
             throw new RequestErrorException("HTTP Method not supported by class.", 405);
             return;
         }
@@ -271,20 +221,6 @@ class Web
             }
         }
     }
-
-
-    /**
-     * inspect headers to see if request is of ajax variety
-     *
-     * @return void
-     * @author Salimane Adjao Moustapha
-     */
-
-    private function isAjaxRequest()
-	{
-	    return ( isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-	             && $_SERVER['HTTP_X_REQUESTED_WITH']  == 'XMLHttpRequest');
-	}
 
 
 	/**

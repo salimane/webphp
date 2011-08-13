@@ -1,3 +1,4 @@
+#mainly for apache users, if you use nginx (recommended) delete this file
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

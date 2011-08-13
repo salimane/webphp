@@ -6,16 +6,16 @@
 require 'init.php';
 
 $urls = array(
-              '#^$#'      => 'hello',
-              '#^named/(?P<namedparam>[a-zA-Z_]+)/?$#' => 'named',
+              '#^$#'      => array('hello', 'home'),
+              '#^named/(?P<namedparam>[a-zA-Z_]+)/?$#' => array('named', 'index'),
              );
 
 
 class hello {
 
-    function GET()
+    function home()
     {
-        echo 'Welcome to web-php';
+        echo 'Welcome to webphp';
 
         /*
         // gets a reference to an Inspekt _GET object, clean up your variables!
@@ -33,32 +33,12 @@ class hello {
         // $vars['message'] = 'requested via get';
         // echo Web::render("name-of-file.html", $vars);
     }
-
-    function POST($p)
-    {
-        // like you just posted a form
-        /*
-        $input = Web::post();
-        if ($email = $input->testEmail('email')) {
-            // wow email is valid!
-             save to db...
-             Web::redirect('/gohere');
-        }
-        */
-
-        echo 'request via POST';
-    }
-
-    function AJAX()
-    {
-        echo "requested via AJAX";
-    }
 }
 
 
 
 class named {
-    function GET($p)
+    function index($p)
     {
         var_dump($p);
         echo "this is a captured var from the URI: ".$p['namedparam'];
@@ -67,10 +47,6 @@ class named {
 
 
 try {
-    /* debug?
-    $i = Web::instance();
-    $i->debug(true);
-    */
     Web::run($urls);
 } catch (RequestErrorException $e) {
     // errorCode gives you the 404 or 500 code etc.
