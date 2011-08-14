@@ -1,16 +1,17 @@
-<?php 
+<?php
 
 
 /**
-* RequestErrorException
-*/
+ * RequestErrorException
+ * @author Salimane Adjao Moustapha
+ */
 class RequestErrorException extends Exception
 {
     public function __construct($message, $code = 404)
     {
         parent::__construct($message, $code);
     }
-    
+
     public function __toString()
     {
         $string = "<html>
@@ -25,18 +26,18 @@ class RequestErrorException extends Exception
                     </html>";
          return $string;
     }
-    
+
     public function viewError()
     {
         Web::httpHeader($this->code);
         echo $this;
     }
-    
+
     public function errorCode()
     {
         return $this->code;
     }
-        
+
 }
 
 

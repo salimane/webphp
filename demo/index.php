@@ -3,7 +3,8 @@
 
 // sample program
 
-require 'init.php';
+require 'config.php';
+require WEBPHP_DIR.DIRECTORY_SEPARATOR.'web.php';
 
 $urls = array(
               '#^$#'      => array('hello', 'home'),
