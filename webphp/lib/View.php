@@ -18,6 +18,10 @@ class View {
     return isset($this->viewvars[$name]) ? $this->viewvars[$name] : NULL;
   }
 
+  function __isset($name) {
+    return isset($this->viewvars[$name]);
+  }
+        
   /**
    * Render a script content
    * @param  $script

@@ -51,7 +51,17 @@ class Template {
   function __get($varname){
     return isset($this->templateVars[$varname]) ? $this->templateVars[$varname] : '';
   }
-
+  
+  /**
+   * magic function to avoid a bug in "empty()" function overloading __isset
+   * @param  $varname
+   * @return bool
+   * @author Salimane Adjao Moustapha
+   */
+  function __isset($varname){
+    return isset($this->templateVars[$varname]);
+  }
+  
   /**
    * Set variables for the current template and render the specified template
    * @param  $template
